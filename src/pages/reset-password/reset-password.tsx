@@ -3,9 +3,13 @@ import { useNavigate } from 'react-router-dom';
 
 import { resetPasswordApi } from '@api';
 import { ResetPasswordUI } from '@ui-pages';
+import { useDispatch } from '../../services/store';
+import { resetPassword } from '../../services/user-slice';
 
 export const ResetPassword: FC = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
   const [error, setError] = useState<Error | null>(null);
@@ -19,6 +23,8 @@ export const ResetPassword: FC = () => {
         navigate('/login');
       })
       .catch((err) => setError(err));
+
+    dispatch(resetPassword({ password, token }));
   };
 
   useEffect(() => {
