@@ -29,15 +29,31 @@ const initialState: TUserState = {
 
 export const loginUser = createAsyncThunk(
   'user/login',
-  (loginData: TLoginData) => loginUserApi(loginData)
+  async (loginData: TLoginData) => {
+    const result = await loginUserApi(loginData);
+    setCookie('accessToken', result.accessToken);
+    localStorage.setItem('refreshToken', result.refreshToken);
+
+    return result;
+  }
 );
 
 export const registerUser = createAsyncThunk(
   'user/register',
-  (registerData: TRegisterData) => registerUserApi(registerData)
+  async (registerData: TRegisterData) => {
+    const result = await registerUserApi(registerData);
+    setCookie('accessToken', result.accessToken);
+    localStorage.setItem('refreshToken', result.refreshToken);
+
+    return result;
+  }
 );
 
-export const logoutUser = createAsyncThunk('user/logout', logoutApi);
+export const logoutUser = createAsyncThunk('user/logout', async () => {
+  await logoutApi();
+  deleteCookie('accessToken');
+  localStorage.removeItem('refreshToken');
+});
 
 export const updateUser = createAsyncThunk(
   'user/update',
@@ -77,8 +93,6 @@ export const userSlice = createSlice({
         state.isAuthorized = true;
         state.isLoading = false;
         state.error = null;
-        setCookie('accessToken', action.payload.accessToken);
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
       .addCase(loginUser.rejected, (state, { error }) => {
         state.isLoading = false;
@@ -93,8 +107,6 @@ export const userSlice = createSlice({
         state.isAuthorized = true;
         state.isLoading = false;
         state.error = null;
-        setCookie('accessToken', action.payload.accessToken);
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
       .addCase(registerUser.rejected, (state, { error }) => {
         state.isLoading = false;
@@ -109,8 +121,6 @@ export const userSlice = createSlice({
         state.isAuthorized = false;
         state.isLoading = false;
         state.error = null;
-        deleteCookie('accessToken');
-        localStorage.removeItem('refreshToken');
       })
       .addCase(logoutUser.rejected, (state, { error }) => {
         state.isLoading = false;

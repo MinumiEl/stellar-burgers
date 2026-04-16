@@ -13,7 +13,12 @@ import '../../index.css';
 import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate
+} from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route';
 import { PATHS } from '../../utils/constants';
 import { useEffect } from 'react';
@@ -37,14 +42,14 @@ const App = () => {
     <div className={styles.app}>
       <AppHeader />
 
-      <Routes location={location || background}>
+      <Routes location={background || location}>
         <Route path={PATHS.HOME} element={<ConstructorPage />} />
         <Route
           path={PATHS.MODAL_INGREDIENTS_ID}
-          element={<ConstructorPage />}
+          element={<IngredientDetails />}
         />
         <Route path={PATHS.FEED} element={<Feed />} />
-        <Route path={PATHS.FEED_ID} element={<Feed />} />
+        <Route path={PATHS.FEED_ID} element={<OrderInfo />} />
 
         <Route element={<ProtectedRoute forAuthorized={false} />}>
           <Route path={PATHS.LOGIN} element={<Login />} />
@@ -57,7 +62,7 @@ const App = () => {
           <Route path={PATHS.PROFILE}>
             <Route index element={<Profile />} />
             <Route path={PATHS.PROFILE_ORDERS} element={<ProfileOrders />} />
-            <Route path={PATHS.PROFILE_ORDERS_ID} element={<ProfileOrders />} />
+            <Route path={PATHS.PROFILE_ORDERS_ID} element={<OrderInfo />} />
           </Route>
         </Route>
 
@@ -82,14 +87,16 @@ const App = () => {
               </Modal>
             }
           />
-          <Route
-            path={PATHS.MODAL_PROFILE_ORDERS_NUMBER}
-            element={
-              <Modal title={'Детали профиля'} onClose={handleCloseModal}>
-                <OrderInfo />
-              </Modal>
-            }
-          />
+          <Route element={<ProtectedRoute forAuthorized />}>
+            <Route
+              path={PATHS.MODAL_PROFILE_ORDERS_NUMBER}
+              element={
+                <Modal title={'Детали заказа'} onClose={handleCloseModal}>
+                  <OrderInfo />
+                </Modal>
+              }
+            />
+          </Route>
         </Routes>
       )}
     </div>

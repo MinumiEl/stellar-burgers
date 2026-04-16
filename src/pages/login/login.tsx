@@ -1,4 +1,4 @@
-import { FC, SyntheticEvent, useState } from 'react';
+import { FC, SyntheticEvent } from 'react';
 import { LoginUI } from '@ui-pages';
 import { useDispatch, useSelector } from '../../services/store';
 import {
@@ -10,6 +10,8 @@ import { PATHS } from '../../utils/constants';
 import { useNavigate } from 'react-router-dom';
 import { Preloader } from '@ui';
 import { unwrapResult } from '@reduxjs/toolkit';
+import { useForm } from '../../hooks';
+import { TLoginData } from '@api';
 
 export const Login: FC = () => {
   const dispatch = useDispatch();
@@ -17,13 +19,15 @@ export const Login: FC = () => {
   const isLoading = useSelector(getIsUserLoading);
   const error = useSelector(getUserError) as string;
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { values, createSetter } = useForm<TLoginData>({
+    email: '',
+    password: ''
+  });
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     try {
-      const result = await dispatch(loginUser({ email, password }));
+      const result = await dispatch(loginUser(values));
       unwrapResult(result);
       navigate(PATHS.PROFILE);
     } catch {}
@@ -34,10 +38,10 @@ export const Login: FC = () => {
   return (
     <LoginUI
       errorText={error}
-      email={email}
-      setEmail={setEmail}
-      password={password}
-      setPassword={setPassword}
+      email={values.email}
+      setEmail={createSetter('email')}
+      password={values.password}
+      setPassword={createSetter('password')}
       handleSubmit={handleSubmit}
     />
   );
