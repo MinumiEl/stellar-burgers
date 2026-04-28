@@ -8,7 +8,6 @@ describe('ingredients slice', () => {
   };
 
   it('должен ставить isLoading: true, когда запрос ушел (pending)', () => {
-    // Используем fetchIngredients.pending.type вместо строки
     const action = { type: fetchIngredients.pending.type };
     const state = reducer(initialState, action);
 
