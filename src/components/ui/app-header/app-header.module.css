@@ -35,3 +35,14 @@
   align-items: center;
   margin: 0 auto;
 }
+
+.header_link, .link_position_last {
+    display: flex;
+    text-decoration: none;
+    color: #f2f2f3;
+}
+
+.header_link:hover,
+.link_position_last:hover {
+    color: var(--colors-interface-accent);
+}
