@@ -1,16 +1,24 @@
 import { rootReducer } from './store';
+import ingredientsReducer from './ingredients-slice';
+import constructorReducer from './constructor-slice';
+import orderReducer from './order-slice';
+import orderByNumberReducer from './order-by-number-slice';
+import orderHistoryReducer from './order-history-slice';
+import userReducer from './user-slice';
+import userOrdersReducer from './user-orders-slice';
 
 describe('Проверка rootReducer', () => {
-  it('должен правильно инициализировать начальное состояние', () => {
-    const state = rootReducer(undefined, { type: '@@INIT' });
+  it('должен возвращать корректное начальное состояние при экшене @@INIT', () => {
+    const action = { type: '@@INIT' };
+    const state = rootReducer(undefined, action);
     expect(state).toEqual({
-      ingredients: expect.any(Object),
-      burgerConstructor: expect.any(Object),
-      order: expect.any(Object),
-      orderByNumber: expect.any(Object),
-      orderHistory: expect.any(Object),
-      user: expect.any(Object),
-      userOrders: expect.any(Object),
+      ingredients: ingredientsReducer(undefined, action),
+      burgerConstructor: constructorReducer(undefined, action),
+      order: orderReducer(undefined, action),
+      orderByNumber: orderByNumberReducer(undefined, action),
+      orderHistory: orderHistoryReducer(undefined, action),
+      user: userReducer(undefined, action),
+      userOrders: userOrdersReducer(undefined, action)
     });
   });
 });

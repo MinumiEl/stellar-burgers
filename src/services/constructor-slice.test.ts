@@ -22,9 +22,22 @@ describe('Тестирование редьюсера burgerConstructor', () => 
     image_mobile: ''
   };
 
-  it('должен добавлять ингредиент и генерировать уникальный id (nanoid)', () => {
-    const newState = reducer(initialState, addIngredient(mockMainIngredient));
+  const mockBunIngredient: TIngredient = {
+    _id: '2',
+    name: 'Краторная булка N-200i',
+    type: 'bun',
+    price: 1255,
+    proteins: 80,
+    fat: 24,
+    carbohydrates: 53,
+    calories: 420,
+    image: '',
+    image_large: '',
+    image_mobile: ''
+  };
 
+  it('должен добавлять ингредиент (не булку) и генерировать уникальный id (nanoid)', () => {
+    const newState = reducer(initialState, addIngredient(mockMainIngredient));
     expect(newState.ingredients).toHaveLength(1);
     expect(newState.ingredients[0]).toEqual(
       expect.objectContaining({
@@ -32,6 +45,19 @@ describe('Тестирование редьюсера burgerConstructor', () => 
         id: expect.any(String)
       })
     );
+    expect(newState.bun).toBeNull();
+  });
+
+  it('должен добавлять булку в state.bun и не добавлять в массив ingredients', () => {
+    const newState = reducer(initialState, addIngredient(mockBunIngredient));
+
+    expect(newState.bun).toEqual(
+      expect.objectContaining({
+        ...mockBunIngredient,
+        id: expect.any(String)
+      })
+    );
+    expect(newState.ingredients).toHaveLength(0);
   });
 
   it('должен удалять ингредиент из списка по его id', () => {
@@ -70,7 +96,7 @@ describe('Тестирование редьюсера burgerConstructor', () => 
 
   it('должен очищать конструктор при успешном оформлении заказа (extraReducers)', () => {
     const dirtyState = {
-      bun: mockMainIngredient,
+      bun: mockBunIngredient,
       ingredients: [{ ...mockMainIngredient, id: '123' }]
     };
     const action = { type: sendOrder.fulfilled.type };
